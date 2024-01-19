@@ -1,6 +1,6 @@
 "use client"
 
-import React, { FunctionComponent } from 'react';
+import React, {FunctionComponent, useState, useTransition} from 'react';
 import {CardWrapper} from "@/components/auth/card-wrapper";
 import * as z from 'zod'
 import {useForm} from "react-hook-form";
@@ -11,6 +11,7 @@ import {Input} from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {FormError} from "@/components/form-error";
 import {FormSuccess} from "@/components/form-success";
+import {login} from "@/actions/login";
 
 interface OwnProps {}
 
@@ -18,6 +19,10 @@ type Props = OwnProps;
 
 export const LoginForm: FunctionComponent<Props> = (props) => {
 
+    const [isPending, startTransition] = useTransition()
+
+    const [error, setError] = useState<string | undefined>("")
+    const [success, setSuccess] = useState<string | undefined>("")
     const form  = useForm<z.infer<typeof LoginSchema>>({
         resolver:zodResolver(LoginSchema),
         defaultValues:{
@@ -29,7 +34,20 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
 
     const onSubmit = (values:z.infer<typeof LoginSchema>) => {
 
-        console.log(values)
+
+        setError("")
+        setSuccess("")
+        //beneficial when caching
+        startTransition(() => {
+
+            //or api routes
+            login(values).then((data)  => {
+                setError(data.error)
+
+            setSuccess(data.success)
+            })
+        })
+
     }
   return (
 
@@ -51,7 +69,7 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
                               <FormLabel>Email</FormLabel>
 
                               <FormControl>
-                                  <Input {...field} placeholder="john.doe@example.com" type='email'/>
+                                  <Input {...field}  disabled={isPending} placeholder="john.doe@example.com" type='email'/>
                               </FormControl>
                               <FormMessage/>
                           </FormItem>
@@ -63,7 +81,7 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
                               <FormLabel>Password</FormLabel>
 
                               <FormControl>
-                                  <Input {...field} placeholder="*********" type='password'/>
+                                  <Input {...field}  disabled={isPending} placeholder="*********" type='password'/>
                               </FormControl>
                               <FormMessage/>
                           </FormItem>
@@ -71,11 +89,11 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
                       />
                   </div>
 
-                  <FormError message=''/>
-                  <FormSuccess message=''/>
+                  <FormError message={error}/>
+                  <FormSuccess message={success}/>
 
 
-              <Button type='submit' className='w-full '>
+              <Button type='submit' className='w-full ' disabled={isPending}>
                   Login
               </Button>
 
