@@ -2,7 +2,10 @@
 import * as z from 'zod'
 import {LoginSchema} from "@/schemas";
 import {db} from "@/lib/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+import {DEFAULT_LOGIN_REDIRECT} from "@/routes";
+import {signIn} from "@/auth";
+import {AuthError} from "next-auth";
 
 export const login =async (values:z.infer<typeof  LoginSchema>) => {
 
@@ -16,23 +19,24 @@ export const login =async (values:z.infer<typeof  LoginSchema>) => {
 
     const { email, password} = validatedFields.data
 
-    const user = await db.user.findUnique({
-        where:{
-            email
+    try {
+        await signIn('credentials', {
+            email,
+            password,
+            redirectTo:DEFAULT_LOGIN_REDIRECT,
+        })
+    }catch(error){
+        if(error  instanceof AuthError ){
+            switch(error.type){
+                case 'CredentialsSignin':
+                    return {error:'Invalid credentials'}
+                default:
+                    return {error:'something went wrong!'}
+            }
         }
-    })
 
-    if(!user){
-        return {error:'User has not been registered!'}
+        throw  error
     }
-    //check if login password is the same as user password
 
 
-    const isValid = await bcrypt.compare(password, user.password)
-    if (!isValid) return {error: 'invalid password!'}
-
-                          // await db.user.
-
-
-    return {success: 'Email is sent'}
 }
