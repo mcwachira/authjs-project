@@ -56,7 +56,7 @@ export const RegisterForm: FunctionComponent<Props> = (props) => {
 
       headerLabel='Create an account '
       backButtonLabel='Have an account ?'
-      backButtonHref='/auth/register'
+      backButtonHref='/auth/login'
       showSocial
       >
 

@@ -55,7 +55,7 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
 
       headerLabel='Welcome Back'
       backButtonLabel='Dont Have an account'
-      backButtonHref='/auth/login'
+      backButtonHref='/auth/register'
       showSocial
       >
 
