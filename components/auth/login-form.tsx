@@ -42,9 +42,15 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
 
             //or api routes
             login(values).then((data)  => {
-                setError(data.error)
+                if (data?.error) {
+                    form.reset();
+                    setError(data.error);
+                }
 
-            setSuccess(data.success)
+                if (data?.success) {
+                    form.reset();
+                    setSuccess(data.success);
+                }
             })
         })
 
