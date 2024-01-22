@@ -6,6 +6,8 @@ import bcrypt from "bcryptjs";
 import {DEFAULT_LOGIN_REDIRECT} from "@/routes";
 import {signIn} from "@/auth";
 import {AuthError} from "next-auth";
+import {getUserByEmail} from "@/data/user";
+import {generateVerificationToken} from "@/lib/tokens";
 
 export const login =async (values:z.infer<typeof  LoginSchema>) => {
 
@@ -18,6 +20,21 @@ export const login =async (values:z.infer<typeof  LoginSchema>) => {
     }
 
     const { email, password} = validatedFields.data
+
+
+    const existingUser = await getUserByEmail(email);
+
+    if(!existingUser || !existingUser.email || !existingUser.password){
+        return {error:'Email does not exist'}
+    }
+
+
+    //generating token for users who have not verified their email address
+    if(!existingUser.emailVerified){
+        const verificationToken = await generateVerificationToken(existingUser.email)
+
+        return {success:'Confirmation Email sent'}
+    }
 
     try {
         await signIn('credentials', {
