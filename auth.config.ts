@@ -6,6 +6,7 @@ import {LoginSchema} from "@/schemas";
 import {getUserByEmail} from "@/data/user";
 import bcrypt from "bcryptjs";
 
+//does not run on the edge
 export default {
     providers: [
         Credentials({
