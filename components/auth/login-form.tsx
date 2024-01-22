@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import {FormError} from "@/components/form-error";
 import {FormSuccess} from "@/components/form-success";
 import {login} from "@/actions/login";
+import {useSearchParams} from "next/navigation";
 
 interface OwnProps {}
 
@@ -19,6 +20,10 @@ type Props = OwnProps;
 
 export const LoginForm: FunctionComponent<Props> = (props) => {
 
+
+    const searchParams = useSearchParams()
+
+    const urlError = searchParams.get('error') === 'OAuthAccountNotLinked'?"Email is already in use with another provider": ""
     const [isPending, startTransition] = useTransition()
 
     const [error, setError] = useState<string | undefined>("")
@@ -95,7 +100,7 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
                       />
                   </div>
 
-                  <FormError message={error}/>
+                  <FormError message={error || urlError}/>
                   <FormSuccess message={success}/>
 
 
