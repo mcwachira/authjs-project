@@ -7,8 +7,8 @@ import {DEFAULT_LOGIN_REDIRECT} from "@/routes";
 import {signIn} from "@/auth";
 import {AuthError} from "next-auth";
 import {getUserByEmail} from "@/data/user";
-import {generateVerificationToken} from "@/lib/tokens";
-import {sendVerificationEmail} from "@/lib/mail";
+import {generatePasswordResetToken, generateVerificationToken} from "@/lib/tokens";
+import {sendPasswordResetEmail, sendVerificationEmail} from "@/lib/mail";
 
 export const reset =async (values:z.infer<typeof  ResetSchema>) => {
 
@@ -32,6 +32,11 @@ export const reset =async (values:z.infer<typeof  ResetSchema>) => {
 
     //generating token and reset email
 
+    const passwordResetToken = await generatePasswordResetToken(email);
+    await sendPasswordResetEmail(
+        passwordResetToken.email,
+        passwordResetToken.token
+    )
 
 
     return {

@@ -92,7 +92,7 @@ export const ResetForm: FunctionComponent<Props> = (props) => {
 
 
                     <Button type='submit' className='w-full ' disabled={isPending}>
-                        Login
+                     Reset Password
                     </Button>
 
                 </form>
