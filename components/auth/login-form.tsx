@@ -13,6 +13,7 @@ import {FormError} from "@/components/form-error";
 import {FormSuccess} from "@/components/form-success";
 import {login} from "@/actions/login";
 import {useSearchParams} from "next/navigation";
+import Link from "next/link";
 
 interface OwnProps {}
 
@@ -94,6 +95,13 @@ export const LoginForm: FunctionComponent<Props> = (props) => {
                               <FormControl>
                                   <Input {...field}  disabled={isPending} placeholder="*********" type='password'/>
                               </FormControl>
+
+                              <Button size='sm' variant='link' asChild className='px-0 font-normal'>
+                                  <Link href="/auth/reset">
+                                      Forgot Password
+                                  </Link>
+
+                              </Button>
                               <FormMessage/>
                           </FormItem>
                       )}
