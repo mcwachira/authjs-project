@@ -8,6 +8,7 @@ import {signIn} from "@/auth";
 import {AuthError} from "next-auth";
 import {getUserByEmail} from "@/data/user";
 import {generateVerificationToken} from "@/lib/tokens";
+import {sendVerificationEmail} from "@/lib/mail";
 
 export const login =async (values:z.infer<typeof  LoginSchema>) => {
 
@@ -32,7 +33,7 @@ export const login =async (values:z.infer<typeof  LoginSchema>) => {
     //generating token for users who have not verified their email address
     if(!existingUser.emailVerified){
         const verificationToken = await generateVerificationToken(existingUser.email)
-
+        await sendVerificationEmail(verificationToken.email, verificationToken.token)
         return {success:'Confirmation Email sent'}
     }
 
