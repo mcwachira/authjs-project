@@ -20,6 +20,7 @@ export const NewVerificationForm = () =>{
     const token = searchParams.get("token")
 
     const onSubmit = useCallback(() => {
+        if(success || error) return
 
         if(!token){
             setError('Missing Token!')
@@ -34,15 +35,16 @@ export const NewVerificationForm = () =>{
       setError('Something went wrong')
   })
 
-    }, [token])
+    }, [token, success, error])
 
 
+    //change to call use effect one
     useEffect(() => {
         onSubmit()
     }, [onSubmit])
     return (
         <CardWrapper backButtonLabel="Back to login"
-                     backButtonHref="/autyh/lognm"
+                     backButtonHref="/auth/login"
             headerLabel="Confirm your verification"  >
 
             <div className="flex items-center w-full justify-center">
@@ -52,7 +54,10 @@ export const NewVerificationForm = () =>{
 
 
                 <FormSuccess message={success}/>
-                <FormError message={error}/>
+                {!success &&(
+                    <FormError message={error}/>
+                )}
+
             </div>
 
 
